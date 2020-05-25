@@ -1,30 +1,22 @@
-from tkinter import Tk, Menu, Text, filedialog, INSERT
-import os
-
-
-def QuitFrame():
-    quit()
-
-
-def Open():
-    """
-    Open a file for reading
-    :return: Str
-    """
-    fileName = filedialog.askopenfile(initialdir="/", filetypes=(("Text File", "*.txt"), ("All Files", "*.*")),
-                                      title="Choose a file."
-                                      )
-
-    file = open(fileName, 'r')
-    f = file.readlines()
-    t.inser(INSERT, f.read())
+from tkinter import Tk, Menu, Text
+window = Tk()
+menubar = Menu(window)
+file_menu = Menu(menubar)
+view_menu = Menu(menubar)
+T = Text()
 
 
 class Clients(object):
-    def __init__(self, width, height, title):
+    def __init__(self, width, height, title, menu_bar, filemenu, viewmenu, text,  win, tear):
         self.width = width
         self.height = height
         self.title = title
+        self.win = win
+        self.menubar = menubar
+        self.filemenu = filemenu
+        self.viewmenu = viewmenu
+        self.tear = 0
+        self.text = text
 
     def getWidth(self):
         """
@@ -48,26 +40,30 @@ class Clients(object):
         return self.title
 
     def draw(self):
-        win = Tk()
-        win.geometry(f"{self.getWidth()}x{self.getHeight()}")
-        win.title(f"{self.getTitle()}")
+        self.win.geometry(f"{self.width}x{self.height}")
+        self.win.title(f"{self.getTitle()}")
+        self.menubar = Menu(self.win)
+        self.filemenu = Menu(self.menubar, tearoff=self.tear)
+        self.filemenu.add_command(label="Open")
+        self.filemenu.add_command(label="New", command="")
+        self.filemenu.add_command(label="Save", command="")
+        self.filemenu.add_command(label="Save As", command="")
+        self.filemenu.add_separator()
+        self.filemenu.add_command(label="Exit", command=self.win.quit)
+        self.menubar.add_cascade(label="File", menu=self.filemenu)
 
-        menubar = Menu(win)
-        filemenu = Menu(menubar, tearoff=0)
-        filemenu.add_command(label="Open", command=Open)
-        filemenu.add_command(label="New", command="")
-        filemenu.add_separator()
-        filemenu.add_command(label="Save", command="")
-        filemenu.add_command(label="Save As", command="")
-        filemenu.add_separator()
-        filemenu.add_command(label="Exit", command=QuitFrame)
-        menubar.add_cascade(label="File", menu=filemenu)
+        self.viewmenu = Menu(self.menubar, tearoff=self.tear)
+        self.viewmenu.add_command(label="Zoom In", command="")
+        self.viewmenu.add_command(label="Zoom Out", command="")
+        self.viewmenu.add_command(label="Show Time", command="")
+        self.menubar.add_cascade(label="View", menu=self.viewmenu)
 
-        T = Text(win, width=self.width, height=self.height)
-        T.pack()
-        win.config(menu=menubar)
-        win.mainloop()
+        self.text = Text(self.win, width=self.width, height=self.height)
+        self.text.pack()
+
+        self.win.config(menu=self.menubar)
+        self.win.mainloop()
 
 
-myClient = Clients(1280, 720, "Editor")
+myClient = Clients(1280, 720, "Editor", menubar, file_menu, view_menu, T, window, 0)
 myClient.draw()
