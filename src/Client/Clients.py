@@ -1,41 +1,24 @@
-from tkinter import Tk, Menu, Text, filedialog, INSERT
-import os
+from tkinter import Tk
+window = Tk()
 
 
-def QuitFrame():
-    quit()
-
-
-def Open():
-    """
-    Open a file for reading
-    :return: Str
-    """
-    fileName = filedialog.askopenfile(initialdir="/", filetypes=(("Text File", "*.txt"), ("All Files", "*.*")),
-                                      title="Choose a file."
-                                      )
-
-    file = open(fileName, 'r')
-    f = file.readlines()
-    t.inser(INSERT, f.read())
-
-
-class Clients(object):
-    def __init__(self, width, height, title):
+class Client(object):
+    def __init__(self, width, height, title, win):
         self.width = width
         self.height = height
         self.title = title
+        self.win = win
 
     def getWidth(self):
         """
-        returns the width of the frame
+        return width of frame
         :return: Int
         """
         return self.width
 
     def getHeight(self):
         """
-        returns the height of the frame
+        return height of frame
         :return: Int
         """
         return self.height
@@ -48,26 +31,10 @@ class Clients(object):
         return self.title
 
     def draw(self):
-        win = Tk()
-        win.geometry(f"{self.getWidth()}x{self.getHeight()}")
-        win.title(f"{self.getTitle()}")
-
-        menubar = Menu(win)
-        filemenu = Menu(menubar, tearoff=0)
-        filemenu.add_command(label="Open", command=Open)
-        filemenu.add_command(label="New", command="")
-        filemenu.add_separator()
-        filemenu.add_command(label="Save", command="")
-        filemenu.add_command(label="Save As", command="")
-        filemenu.add_separator()
-        filemenu.add_command(label="Exit", command=QuitFrame)
-        menubar.add_cascade(label="File", menu=filemenu)
-
-        T = Text(win, width=self.width, height=self.height)
-        T.pack()
-        win.config(menu=menubar)
-        win.mainloop()
+        self.win.geometry(f"{self.width}x{self.height}")
+        self.win.title(f"{self.title}")
+        self.win.mainloop()
 
 
-myClient = Clients(1280, 720, "Editor")
+myClient = Client(1280, 720, "Title", window)
 myClient.draw()
